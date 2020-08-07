@@ -1,5 +1,3 @@
-
-
 # Programs
 Base code for program assignments in Software Development (C S 371). 
 
@@ -13,5 +11,5 @@ This assignment relies on the Coverage programs.
 This assignment relies on the Circles programs. 
 
 ## Program 5
-##### RustyRaptor
+##### 
 This assignment relies on the HelloWorld programs.
