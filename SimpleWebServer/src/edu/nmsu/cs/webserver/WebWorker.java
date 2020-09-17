@@ -63,9 +63,10 @@ public class WebWorker implements Runnable {
 
     /**
      * Read the HTTP request header.
+     * @return the string of the file path from the GET request if applicable
      **/
     private String readHTTPRequest(InputStream is) {
-        String file_path = "./index.html";
+        String file_path = "/";
         String line;
         BufferedReader r = new BufferedReader(new InputStreamReader(is));
         while (true) {
@@ -73,10 +74,15 @@ public class WebWorker implements Runnable {
                 while (!r.ready())
                     Thread.sleep(1);
                 line = r.readLine();
+
+                // Split the request into items
                 String[] line_items = line.split(" ");
 
+                // Check if it's a GET request.
                 if (line_items[0].equals("GET")) {
-                    System.out.println("found a get request");
+//                    System.out.println("found a get request");
+
+                    // if it is lets get the file path its requesting to return it
                     file_path = line_items[1];
                 }
 
@@ -96,16 +102,19 @@ public class WebWorker implements Runnable {
      *
      * @param os          is the OutputStream object to write to
      * @param contentType is the string MIME content type (e.g. "text/html")
+     * @param file_path   is the file path string from the GET request.
+     * @return The string of the http response code
      **/
     private String writeHTTPHeader(OutputStream os, String contentType, String file_path) throws Exception {
         File file = new File("./" + file_path);
         String http_code = "200 OK";
 
+        // check if it's a valid file
         if (!file.isDirectory() && file.exists()) {
-            System.out.println("it exists");
+//            System.out.println("it exists");
             http_code = "200 OK";
         } else {
-            System.out.println("It doesn't exist.");
+//            System.out.println("It doesn't exist.");
             http_code = "404 Not Found";
         }
         Date d = new Date();
@@ -122,7 +131,7 @@ public class WebWorker implements Runnable {
         os.write("Content-Type: ".getBytes());
         os.write(contentType.getBytes());
         os.write("\n\n".getBytes()); // HTTP header ends with 2 newlines
-        System.out.println(file + "|||");
+//        System.out.println(file + "|||");
         return http_code;
     }
 
@@ -131,26 +140,32 @@ public class WebWorker implements Runnable {
      * header has been written out.
      *
      * @param os is the OutputStream object to write to
+     * @param file_path is the file path string from the GET request.
+     * @param http_code is the http_code identified in the writeHttpHeader function
      **/
     private void writeContent(OutputStream os, String http_code, String file_path) throws Exception {
-        System.out.println(file_path + "|" + http_code);
+//        System.out.println(file_path + "|" + http_code);
         File file = new File("./" + file_path);
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd");
         LocalDateTime now = LocalDateTime.now();
         String date = dtf.format(now);
+
+        // 404 page render
         if (http_code.equals("404 Not Found")) {
             os.write("<html><head></head><body>\n".getBytes());
             os.write("<h3>404 Not Found</h3>\n".getBytes());
             os.write(" <img src=\"https://media1.tenor.com/images/d5d2b8703922df9d25da6aded6eaf2f3/tenor.gif?itemid=7666840\" alt=\"John Travolta\">\n".getBytes());
             os.write("</body></html>\n".getBytes());
         } else {
+
+            // render the file from the path
             BufferedReader reader;
             try {
                 reader = new BufferedReader(new FileReader(
                         "./" + file_path));
                 String line = reader.readLine();
                 while (line != null) {
-                    System.out.println(line);
+//                    System.out.println(line);
                     // read next line
                     line = reader.readLine();
                     if (line == null){
