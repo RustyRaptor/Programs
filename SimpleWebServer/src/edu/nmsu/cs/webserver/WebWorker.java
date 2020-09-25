@@ -20,8 +20,15 @@ package edu.nmsu.cs.webserver;
  * @author Jon Cook, Ph.D.
  **/
 
+import com.sun.imageio.plugins.gif.GIFImageReader;
+
+import javax.imageio.ImageIO;
+import javax.swing.*;
+import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.Socket;
+import java.nio.file.Files;
 import java.text.DateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -63,6 +70,7 @@ public class WebWorker implements Runnable {
 
     /**
      * Read the HTTP request header.
+     *
      * @return the string of the file path from the GET request if applicable
      **/
     private String readHTTPRequest(InputStream is) {
@@ -94,7 +102,7 @@ public class WebWorker implements Runnable {
                 break;
             }
         }
-        return file_path;
+        return "www" + file_path;
     }
 
     /**
@@ -111,10 +119,9 @@ public class WebWorker implements Runnable {
 
         // check if it's a valid file
         if (!file.isDirectory() && file.exists()) {
-//            System.out.println("it exists");
             http_code = "200 OK";
+            contentType = Files.probeContentType(file.toPath());
         } else {
-//            System.out.println("It doesn't exist.");
             http_code = "404 Not Found";
         }
         Date d = new Date();
@@ -131,7 +138,6 @@ public class WebWorker implements Runnable {
         os.write("Content-Type: ".getBytes());
         os.write(contentType.getBytes());
         os.write("\n\n".getBytes()); // HTTP header ends with 2 newlines
-//        System.out.println(file + "|||");
         return http_code;
     }
 
@@ -139,16 +145,14 @@ public class WebWorker implements Runnable {
      * Write the data content to the client network connection. This MUST be done after the HTTP
      * header has been written out.
      *
-     * @param os is the OutputStream object to write to
+     * @param os        is the OutputStream object to write to
      * @param file_path is the file path string from the GET request.
      * @param http_code is the http_code identified in the writeHttpHeader function
      **/
     private void writeContent(OutputStream os, String http_code, String file_path) throws Exception {
-//        System.out.println(file_path + "|" + http_code);
         File file = new File("./" + file_path);
-        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd");
-        LocalDateTime now = LocalDateTime.now();
-        String date = dtf.format(now);
+        String contentType = Files.probeContentType(file.toPath());
+        System.out.println(contentType.split("/")[1]);
 
         // 404 page render
         if (http_code.equals("404 Not Found")) {
@@ -156,30 +160,57 @@ public class WebWorker implements Runnable {
             os.write("<h3>404 Not Found</h3>\n".getBytes());
             os.write(" <img src=\"https://media1.tenor.com/images/d5d2b8703922df9d25da6aded6eaf2f3/tenor.gif?itemid=7666840\" alt=\"John Travolta\">\n".getBytes());
             os.write("</body></html>\n".getBytes());
-        } else {
+        }
 
-            // render the file from the path
-            BufferedReader reader;
-            try {
-                reader = new BufferedReader(new FileReader(
-                        "./" + file_path));
-                String line = reader.readLine();
-                while (line != null) {
-//                    System.out.println(line);
-                    // read next line
-                    line = reader.readLine();
-                    if (line == null){
-                        break;
-                    }
-                    line = line.replaceAll("<cs371server>", "This is Ziad's server");
-                    line = line.replaceAll("<cs371date>", date);
-                    os.write(line.getBytes());
-                }
-                reader.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+        // If it's not text lets serve it as a binary file and let the browser handle the rest.
+        else if (!contentType.split("/")[0].equals("text")) {
+            writeBinary(os, file_path);
+        }
+
+        // otherwise it must be a text file so let's serve it line by line as strings to bytes.
+        else {
+            writeText(os, file_path);
         }
 
     }
+
+    private void writeBinary(OutputStream os, String file_path) throws IOException {
+        InputStream istream = new FileInputStream(file_path);
+        int byteRead;
+        while ((byteRead = istream.read()) != -1) {
+            os.write(byteRead);
+        }
+    }
+
+    private void writeText(OutputStream os, String file_path) {
+
+        // Get the current date
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd");
+        LocalDateTime now = LocalDateTime.now();
+        String date = dtf.format(now);
+
+        // render the file from the path
+        BufferedReader reader;
+        try {
+            reader = new BufferedReader(new FileReader(
+                    "./" + file_path));
+            String line = reader.readLine();
+            while (line != null) {
+                // read next line
+                line = reader.readLine();
+                if (line == null) {
+                    break;
+                }
+
+                // Replace all our tags with the respective info.
+                line = line.replaceAll("<cs371server>", "This is Ziad's server");
+                line = line.replaceAll("<cs371date>", date);
+                os.write(line.getBytes());
+            }
+            reader.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
 } // end class
