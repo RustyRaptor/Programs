@@ -20,12 +20,6 @@ package edu.nmsu.cs.webserver;
  * @author Jon Cook, Ph.D.
  **/
 
-import com.sun.imageio.plugins.gif.GIFImageReader;
-
-import javax.imageio.ImageIO;
-import javax.swing.*;
-import java.awt.*;
-import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.Socket;
 import java.nio.file.Files;
@@ -37,7 +31,7 @@ import java.util.TimeZone;
 
 public class WebWorker implements Runnable {
 
-    private Socket socket;
+    private final Socket socket;
 
     /**
      * Constructor: must have a valid open socket
@@ -54,6 +48,7 @@ public class WebWorker implements Runnable {
     public void run() {
         System.err.println("Handling connection...");
         try {
+            System.out.println("Working Directory = " + System.getProperty("user.dir"));
             InputStream is = socket.getInputStream();
             OutputStream os = socket.getOutputStream();
             String file_path = readHTTPRequest(is);
@@ -65,7 +60,6 @@ public class WebWorker implements Runnable {
             System.err.println("Output error: " + e);
         }
         System.err.println("Done handling connection.");
-        return;
     }
 
     /**
@@ -88,8 +82,6 @@ public class WebWorker implements Runnable {
 
                 // Check if it's a GET request.
                 if (line_items[0].equals("GET")) {
-//                    System.out.println("found a get request");
-
                     // if it is lets get the file path its requesting to return it
                     file_path = line_items[1];
                 }
@@ -102,7 +94,7 @@ public class WebWorker implements Runnable {
                 break;
             }
         }
-        return "www" + file_path;
+        return "./" + file_path;
     }
 
     /**
@@ -174,6 +166,13 @@ public class WebWorker implements Runnable {
 
     }
 
+    /**
+     * Used to serve binary non-text files to the browser.
+     *
+     * @param os        the output stream
+     * @param file_path the path to the binary file
+     * @throws IOException
+     */
     private void writeBinary(OutputStream os, String file_path) throws IOException {
         InputStream istream = new FileInputStream(file_path);
         int byteRead;
@@ -182,6 +181,12 @@ public class WebWorker implements Runnable {
         }
     }
 
+    /**
+     * Serves a text or html file to the browser.
+     *
+     * @param os        the output stream
+     * @param file_path the file path to the text file
+     */
     private void writeText(OutputStream os, String file_path) {
 
         // Get the current date
@@ -192,8 +197,7 @@ public class WebWorker implements Runnable {
         // render the file from the path
         BufferedReader reader;
         try {
-            reader = new BufferedReader(new FileReader(
-                    "./" + file_path));
+            reader = new BufferedReader(new FileReader(file_path));
             String line = reader.readLine();
             while (line != null) {
                 // read next line
@@ -212,5 +216,4 @@ public class WebWorker implements Runnable {
             e.printStackTrace();
         }
     }
-
-} // end class
+}

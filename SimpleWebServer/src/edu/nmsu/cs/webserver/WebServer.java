@@ -18,27 +18,24 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 public class WebServer {
-    private ServerSocket socket;
-
-    private boolean running;
 
     /**
      * Constructor
      **/
     private WebServer() {
-        running = false;
+        boolean running = false;
     }
 
     /**
      * Web server starting point. This method does not return until the server is finished, so perhaps
      * it should be named "runServer" or something like that.
      *
-     * @param port
-     *          is the TCP port number to accept connections on
+     * @param port is the TCP port number to accept connections on
      **/
     private boolean start(int port) {
         Socket workerSocket;
         WebWorker worker;
+        ServerSocket socket;
         try {
             socket = new ServerSocket(port);
         } catch (Exception e) {
