@@ -42,6 +42,27 @@ public class Circle2Test {
         p = circle2.moveBy(1, 1);
         Assert.assertTrue(p.x == 2 && p.y == 3);
     }
+    //
+    // Test a fractional positive move
+    //
+    @Test
+    public void simpleMoveFrac() {
+        Point p;
+        System.out.println("Running test simpleMoveFrac.");
+        p = circle2.moveBy(1.5, 1.5);
+        Assert.assertTrue(p.x == 2.5 && p.y == 3.5);
+    }
+
+    //
+    // Test a fractional negative move
+    //
+    @Test
+    public void simpleMoveNegFrac() {
+        Point p;
+        System.out.println("Running test simpleMoveNegFrac.");
+        p = circle2.moveBy(-1.5, -1.5);
+        Assert.assertTrue(p.x == -0.5 && p.y == 0.5);
+    }
 
     //
     // Test a simple negative move
@@ -52,6 +73,48 @@ public class Circle2Test {
         System.out.println("Running test simpleMoveNeg.");
         p = circle2.moveBy(-1, -1);
         Assert.assertTrue(p.x == 0 && p.y == 1);
+    }
+
+    //
+    // Test a simple negative X move
+    //
+    @Test
+    public void simpleMoveXNeg() {
+        Point p;
+        System.out.println("Running test simpleMoveXNeg.");
+        p = circle2.moveBy(-1, 1);
+        Assert.assertTrue(p.x == 0 && p.y == 3);
+    }
+    //
+    // Test a simple negative X move
+    //
+    @Test
+    public void simpleMoveYNeg() {
+        Point p;
+        System.out.println("Running test simpleMoveYNeg.");
+        p = circle2.moveBy(1, -1);
+        Assert.assertTrue(p.x == 2 && p.y == 1);
+    }
+
+    //
+    // Test a simple Y fractional move
+    //
+    @Test
+    public void simpleMoveYFrac() {
+        Point p;
+        System.out.println("Running test simpleMoveYFrac.");
+        p = circle2.moveBy(1, 1.5);
+        Assert.assertTrue(p.x == 2 && p.y == 3.5);
+    }
+    //
+    // Test a simple X fractional move
+    //
+    @Test
+    public void simpleMoveXFrac() {
+        Point p;
+        System.out.println("Running test simpleMoveXFrac.");
+        p = circle2.moveBy(1.5, 1);
+        Assert.assertTrue(p.x == 2.5 && p.y == 3);
     }
 
     //
@@ -70,7 +133,7 @@ public class Circle2Test {
     @Test
     public void simpleMoveNegDiff() {
         Point p;
-        System.out.println("Running test simpleMoveDiff.");
+        System.out.println("Running test simpleMoveNegDiff.");
         p = circle2.moveBy(-2, -3);
         Assert.assertTrue(p.x == -1 && p.y == -1);
     }
@@ -81,7 +144,7 @@ public class Circle2Test {
     @Test
     public void simpleScale() {
         Point p;
-        System.out.println("Running test simpleMoveDiff.");
+        System.out.println("Running test simpleScale.");
         circle2.scale(2);
         Assert.assertTrue(circle2.radius == 6);
     }
@@ -95,6 +158,17 @@ public class Circle2Test {
         System.out.println("Running test simpleScaleFrac.");
         circle2.scale(2.5);
         Assert.assertTrue(circle2.radius == 7.5);
+    }
+
+    //
+    // Test scaling to make it smaller
+    //
+    @Test
+    public void simpleScaleLess() {
+        Point p;
+        System.out.println("Running test simpleScaleLess.");
+        circle2.scale(0.5);
+        Assert.assertTrue(circle2.radius == 1.5);
     }
 
     //
@@ -116,6 +190,29 @@ public class Circle2Test {
         System.out.println("Running test simpleIntersectFalse.");
         Circle2 circleA = new Circle2(1, 1, 2);
         Circle2 circleB = new Circle2(6, 7, 2);
+        Assert.assertTrue(!circleA.intersects(circleB));
+    }
+
+    //
+    // Test Intersect with negative x and y when True
+    //
+    @Test
+    public void simpleIntersectTrueNeg() {
+        System.out.println("Running test simpleIntersectFalse.");
+        Circle2 circleA = new Circle2(-2, -2, 3);
+        Circle2 circleB = new Circle2(-6, -6, 3);
+        Assert.assertTrue(circleA.intersects(circleB));
+
+    }
+
+    //
+    // Test Intersect with negative x and y when False
+    //
+    @Test
+    public void simpleIntersectFalseNeg() {
+        System.out.println("Running test simpleIntersectFalse.");
+        Circle2 circleA = new Circle2(-2, -2, 3);
+        Circle2 circleB = new Circle2(-12, -6, 2);
         Assert.assertTrue(!circleA.intersects(circleB));
     }
 
