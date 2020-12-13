@@ -3,6 +3,7 @@ package edu.nmsu.cs.circles;
 public class Circle2 extends Circle {
 
     public Circle2(double x, double y, double radius) {
+        // order x y z
         super(x, y, radius);
     }
 
