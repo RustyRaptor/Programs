@@ -54,6 +54,60 @@ public class Circle1Test {
         Assert.assertTrue(p.x == 0 && p.y == 1);
     }
 
+    //
+    // Test with different values
+    //
+    @Test
+    public void simpleMoveDiff() {
+        Point p;
+        System.out.println("Running test simpleMoveDiff.");
+        p = circle1.moveBy(2, 3);
+        Assert.assertTrue(p.x == 3 && p.y == 5);
+    }
+    //
+    // Test negative with different values
+    //
+    @Test
+    public void simpleMoveNegDiff() {
+        Point p;
+        System.out.println("Running test simpleMoveDiff.");
+        p = circle1.moveBy(-2, -3);
+        Assert.assertTrue(p.x == -1 && p.y == -1);
+    }
+
+    //
+    // Test scaling with a positive value
+    //
+    @Test
+    public void simpleScale() {
+        Point p;
+        System.out.println("Running test simpleMoveDiff.");
+        circle1.scale(2);
+        Assert.assertTrue(circle1.radius == 6);
+    }
+
+    //
+    // Test scaling with a fractional value
+    //
+    @Test
+    public void simpleScaleFrac() {
+        Point p;
+        System.out.println("Running test simpleScaleFrac.");
+        circle1.scale(2.5);
+        Assert.assertTrue(circle1.radius == 7.5);
+    }
+
+    //
+    // Test scaling with a fractional value
+    //
+    @Test
+    public void simpleIntersect() {
+        System.out.println("Running test simpleScaleFrac.");
+        Circle1 circleA = new Circle1(2, 1, 3);
+        Circle1 circleB = new Circle1(10, 5, 8);
+        Assert.assertTrue(circleA.intersects(circleB));
+    }
+
     public static void main(String args[]) {
         try {
             org.junit.runner.JUnitCore.runClasses(
@@ -62,6 +116,5 @@ public class Circle1Test {
             System.out.println("Exception: " + e);
         }
     }
-
 
 }
