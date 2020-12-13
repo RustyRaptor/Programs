@@ -4,6 +4,7 @@ public class Circle2 extends Circle {
 
     public Circle2(double x, double y, double radius) {
         // order x y z
+        // Comment
         super(x, y, radius);
     }
 
