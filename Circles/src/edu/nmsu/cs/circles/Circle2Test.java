@@ -64,6 +64,38 @@ public class Circle2Test {
         p = circle2.moveBy(2, 3);
         Assert.assertTrue(p.x == 3 && p.y == 5);
     }
+    //
+    // Test negative with different values
+    //
+    @Test
+    public void simpleMoveNegDiff() {
+        Point p;
+        System.out.println("Running test simpleMoveDiff.");
+        p = circle2.moveBy(-2, -3);
+        Assert.assertTrue(p.x == -1 && p.y == -1);
+    }
+
+    //
+    // Test scaling with a positive value
+    //
+    @Test
+    public void simpleScale() {
+        Point p;
+        System.out.println("Running test simpleMoveDiff.");
+        circle2.scale(2);
+        Assert.assertTrue(circle2.radius == 6);
+    }
+
+    //
+    // Test scaling with a fractional value
+    //
+    @Test
+    public void simpleScaleFrac() {
+        Point p;
+        System.out.println("Running test simpleScaleFrac.");
+        circle2.scale(2.5);
+        Assert.assertTrue(circle2.radius == 7.5);
+    }
 
     public static void main(String args[]) {
         try {
