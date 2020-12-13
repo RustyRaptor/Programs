@@ -97,6 +97,17 @@ public class Circle2Test {
         Assert.assertTrue(circle2.radius == 7.5);
     }
 
+    //
+    // Test scaling with a fractional value
+    //
+    @Test
+    public void simpleIntersect() {
+        System.out.println("Running test simpleScaleFrac.");
+        Circle2 circleA = new Circle2(2, 1, 3);
+        Circle2 circleB = new Circle2(10, 5, 8);
+        Assert.assertTrue(circleA.intersects(circleB));
+    }
+
     public static void main(String args[]) {
         try {
             org.junit.runner.JUnitCore.runClasses(
