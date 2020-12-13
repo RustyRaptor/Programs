@@ -98,14 +98,25 @@ public class Circle1Test {
     }
 
     //
-    // Test scaling with a fractional value
+    // Test intersect with a True result
     //
     @Test
     public void simpleIntersect() {
-        System.out.println("Running test simpleScaleFrac.");
+        System.out.println("Running test simpleIntersect.");
         Circle1 circleA = new Circle1(2, 1, 3);
         Circle1 circleB = new Circle1(10, 5, 8);
         Assert.assertTrue(circleA.intersects(circleB));
+    }
+
+    //
+    // Test Intersect with a false result
+    //
+    @Test
+    public void simpleIntersectFalse() {
+        System.out.println("Running test simpleIntersectFalse.");
+        Circle1 circleA = new Circle1(1, 1, 2);
+        Circle1 circleB = new Circle1(6, 7, 2);
+        Assert.assertTrue(!circleA.intersects(circleB));
     }
 
     public static void main(String args[]) {
