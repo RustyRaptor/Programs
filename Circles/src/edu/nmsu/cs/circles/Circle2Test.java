@@ -54,6 +54,17 @@ public class Circle2Test {
         Assert.assertTrue(p.x == 0 && p.y == 1);
     }
 
+    //
+    // Test with different values
+    //
+    @Test
+    public void simpleMoveDiff() {
+        Point p;
+        System.out.println("Running test simpleMoveDiff.");
+        p = circle2.moveBy(2, 3);
+        Assert.assertTrue(p.x == 3 && p.y == 5);
+    }
+
     public static void main(String args[]) {
         try {
             org.junit.runner.JUnitCore.runClasses(
