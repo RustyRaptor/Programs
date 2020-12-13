@@ -22,6 +22,13 @@
 
     <target name="run" depends="clean, compile">
         <java classname="edu.nmsu.cs.circles.CircleRun" classpath="bin/classes" fork="true">
+            <classpath>
+                <path refid="junit.path"/>
+                <fileset dir="lib/">
+                    <include name="**/*.jar"/>
+                </fileset>
+                <pathelement path="bin/classes"/>
+            </classpath>
             <arg value="1"/>
             <arg value="1"/>
             <arg value="1"/>
